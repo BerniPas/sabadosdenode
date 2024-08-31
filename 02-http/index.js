@@ -11,6 +11,21 @@ const os = require('os');
 // req: petición
 // res: respuesta
 
+console.log(os.platform());
+console.log(os.release());
+console.log(os.freemem());
+console.log(os.totalmem());
+console.log(os.cpus());
+
+
+// variables de módulos globales de node
+console.log(__dirname);
+console.log(__filename);
+
+
+
+
+
 const servidor = http.createServer(  function(peticion, respuesta) {
 
     console.log(peticion);
