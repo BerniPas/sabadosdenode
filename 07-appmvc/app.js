@@ -25,10 +25,6 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
-app.get('/sucursales', (req, res) => {
-    res.render('sucursales')
-});
-
 app.get('/*', (req, res) => {
     res.render('error');
 });
