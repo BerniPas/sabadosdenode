@@ -6,7 +6,9 @@
     "public/**/*",
     "routes/**/*",
     "controllers/**/*",
+    "conexion/**/*",
     "models/**/*",
-    "app.js"
+    "app.js",
+    "server.js"
     ]
 }
