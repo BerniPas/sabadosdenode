@@ -4,19 +4,8 @@ const { Response } = require("express");
 const Usuario = require('../models/usuarioModel');
 
 
-const homeUsers = (req, res = Response) => {
-    res.render('users')
-}
-
-const loginUsersViews = (req, res = Response) => {
-    res.render('loginUser')
-}
-const registerUsersViews = (req, res = Response) => {
-    res.render('registro')
-}
-
 // Registramos usuarios nuevos
-const registerUsers = async (req, res = Response) => {
+const apiRegisterUsers = async (req, res = Response) => {
 
     let { nombre, email, password } = req.body;
     //console.log(nombre, email, password);
@@ -38,7 +27,7 @@ const registerUsers = async (req, res = Response) => {
     };
 
     if(nombre == '' || email == '' || password == ''){
-        return res.render('registro', {
+        return res.json({
             mensaje: 'Todos los campos son obligatorios' 
         });
     }
@@ -51,7 +40,7 @@ const registerUsers = async (req, res = Response) => {
         console.log(nuevoUsuario);
 
         if(nuevoUsuario){
-            return res.render('registro', {
+            return res.json({
                 mensaje: 'El Usuario ya existe'
             });
         } else {
@@ -62,13 +51,13 @@ const registerUsers = async (req, res = Response) => {
             // gurdamos el usuario en la base de datos
             await usuario.save();
 
-            return res.render('registrado', {
+            return res.status('200').json({
                 mensaje: 'Usuario registrado correctamente'
             });
 
         }
     } catch (error) {
-        return res. render('registrado', {
+        return res.status('500').json({
             mensaje: 'No estás registrado - Estamos trabajando en el problema'
         });
     }
@@ -77,7 +66,7 @@ const registerUsers = async (req, res = Response) => {
 }
 
 // Login de usuarios
-const loginUsers = async (req, res = Response) => {
+const apiLoginUsers = async (req, res = Response) => {
 
     // ############### Recibimos los datos del formulario ###############
     
@@ -95,7 +84,7 @@ const loginUsers = async (req, res = Response) => {
     // ############### Reallizamos validaciones para el formulario ###############
     
     if(emailUser == '' || passwordUser == ''){
-        return res.render('loginUser', {
+        return res.json({
             mensaje: 'Todos los campos son obligatorios' 
         });// en objeto enviamos un mensaje de error
     }
@@ -108,17 +97,17 @@ const loginUsers = async (req, res = Response) => {
         
 
         if(!usuario){
-            return res.render('registro', {
+            return res.json({
                 mensaje: 'El Usuario no existe, registrarse'
             });
         }
 
         if(usuario.password == password && usuario.email == email){
-            return res.render('admin', {
+            return res.json({
                 mensaje: `Bienvenido Administrador ${usuario.nombre}`
             });
         }else{
-            return res.render('loginUser', {
+            return res.json({
                 mensaje: 'El email o el password son incoerrectos'
             });
         }
@@ -126,7 +115,7 @@ const loginUsers = async (req, res = Response) => {
     
         
     } catch (error) {
-        return res. render('registrado', {
+        return res.json({
             mensaje: 'No estás registrado - Estamos trabajando en el problema'
         });
     }
@@ -134,12 +123,7 @@ const loginUsers = async (req, res = Response) => {
     
 }
 
-
 module.exports = {
-    homeUsers,
-    loginUsersViews,
-    registerUsersViews,
-    registerUsers,
-    loginUsers
+    apiRegisterUsers,
+    apiLoginUsers
 }
-

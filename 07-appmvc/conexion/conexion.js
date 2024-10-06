@@ -9,7 +9,7 @@ const MONGO_ATLAS = process.env.MONGO_ATLAS;
 // conexión directa a mongo
 // mongoose.connect(MONGO_LOCAL);
 
-const conexión = mongoose.connect(MONGO_ATLAS, { 
+const conexión = mongoose.connect(MONGO_LOCAL, { 
 /*     version: '1', 
     strict: true, 
     deprecationErrors: true  */

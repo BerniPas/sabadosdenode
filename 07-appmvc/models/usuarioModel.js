@@ -9,8 +9,9 @@ const usuarioSchema = new Schema({
         required: true
     },
     email: {
-        type: Number,
-        required: true
+        type: String,
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -22,4 +23,4 @@ const usuarioSchema = new Schema({
     }
 });
 
-module.expots = mongoose.model('Usuario', usuarioSchema);
+module.exports = mongoose.model('Usuario', usuarioSchema);
