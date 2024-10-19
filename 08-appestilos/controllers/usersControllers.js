@@ -1,3 +1,7 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const Clientes = require('../models/usuarioModel');
 
 const userIndex = (req, res) => {
@@ -11,6 +15,33 @@ const userLoginView = (req, res) => {
 const userRegister = (req, res) => {
     res.render('registro');
 }
+
+const userAdmin = (req, res) => {
+
+    console.log(`Estoy en admin: ${req.cookies.token}`);
+
+    try {
+
+        const firmaApp = process.env.JWT_SECRET;
+
+        const valido = jwt.verify(req.cookies.token, firmaApp);
+
+        console.log(`Valido: ${valido}`);
+        console.log(`Usuario: ${valido.nombre}`);
+        
+
+    } catch (error) {
+        return res.render('error', {
+                mensaje: mensajeErrorUser
+        })
+    }
+
+
+
+
+
+    res.render('admin');
+};
 
 
 //Función para crear un nuevo usuario
@@ -40,6 +71,19 @@ const userCreate = async (req, res) => {
 
         console.log(`6. Usuario Nuevo: ${usuarioNuevo}`);
 
+        // Encriptamos la contraseña
+        const salt = bcrypt.genSaltSync(10);
+
+        console.log(`7. Salt: ${salt}`);
+
+        // mezclamos la sal con el password del cliente
+        const passwordBcrypt = bcrypt.hashSync(password, salt);
+        //usuarioNuevo.password = passwordBcrypt;
+        
+        usuarioNuevo.password = bcrypt.hashSync(password, salt);
+        
+        console.log(`8. Password encriptado: ${passwordBcrypt}`);
+        
         //Guardamos el usuario en la base de datos
         await usuarioNuevo.save();
 
@@ -85,7 +129,7 @@ const userLogin = async (req, res) => {
     
         try {
     
-            const usuario = await Usuario.findOne({ email });
+            const usuario = await Clientes.findOne({ email });
     
             console.log(usuario);
             
@@ -95,12 +139,32 @@ const userLogin = async (req, res) => {
                     mensaje: 'El Usuario no existe, registrarse'
                 });
             }
+
+            // comparamos la contraseña encriptada con el password del formulario
+            const isMatch = bcrypt.compareSync(password, usuario.password);
+
+            console.log(`La contraseña es ${isMatch}`);
     
-            if(usuario.password == password && usuario.email == email){
-                return res.render('admin', {
+            if(isMatch && usuario.role == 'admin'){
+
+                const firmaApp = process.env.JWT_SECRET;
+
+                // Generamos el token
+                const token = jwt.sign({ usuario }, firmaApp, { expiresIn: '1h' });
+
+                console.log(`Token JWT: ${token}`);
+
+                // Enviamos el token en una cookie
+                res.cookie('token', token, { httpOnly: true }).render.render('admin', {
                     mensaje: `Bienvenido Administrador ${usuario.nombre}`
                 });
-            }else{
+            }
+
+            if(isMatch && usuario.role == 'user'){
+                return res.render('productos', {
+                    mensaje: `Bienvenido a la sección de productos ${usuario.nombre}`
+                });
+            } else{
                 return res.render('login', {
                     mensaje: 'El email o el password son incoerrectos'
                 });
@@ -122,6 +186,7 @@ const userLogin = async (req, res) => {
         userRegister,
         userLoginView,
         userCreate,
-        userLogin
+        userLogin,
+        userAdmin
     }    
 

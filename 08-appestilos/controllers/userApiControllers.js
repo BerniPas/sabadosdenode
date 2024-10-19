@@ -1,7 +1,7 @@
 const { Response } = require("express");
 
 // importamos el modelo del user de mongoose
-const Usuario = require('../models/usuarioModel');
+const Clientes = require('../models/usuarioModel');
 
 
 // Registramos usuarios nuevos
@@ -19,12 +19,18 @@ const apiRegisterUsers = async (req, res = Response) => {
         password
     }
 
+    console.log(usuarioData);
+    
+
     // opción de desestructuración de objetos
     const persona = {
         nombre: req.body.nombre,
         email: req.body.email,
         password: req.body.password
     };
+
+    console.log(persona);
+    
 
     if(nombre == '' || email == '' || password == ''){
         return res.json({
@@ -35,9 +41,9 @@ const apiRegisterUsers = async (req, res = Response) => {
     //conexión con la database para insertar datos del user
     try {
 
-        const nuevoUsuario =  await Usuario.findOne({ email });
+        const nuevoUsuario =  await Clientes.findOne({ email });
 
-        console.log(nuevoUsuario);
+        console.log(`1. ${nuevoUsuario}`);
 
         if(nuevoUsuario){
             return res.json({
@@ -46,7 +52,7 @@ const apiRegisterUsers = async (req, res = Response) => {
         } else {
 
             //creamos un nuevo usuario
-            const usuario = new Usuario(usuarioData);
+            const usuario = new Clientes(usuarioData);
 
             // gurdamos el usuario en la base de datos
             await usuario.save();
@@ -57,7 +63,7 @@ const apiRegisterUsers = async (req, res = Response) => {
 
         }
     } catch (error) {
-        return res.status('500').json({
+        return res.json({
             mensaje: 'No estás registrado - Estamos trabajando en el problema'
         });
     }
@@ -91,7 +97,7 @@ const apiLoginUsers = async (req, res = Response) => {
 
     try {
 
-        const usuario = await Usuario.findOne({ email });
+        const usuario = await Clientes.findOne({ email });
 
         console.log(usuario);
         
