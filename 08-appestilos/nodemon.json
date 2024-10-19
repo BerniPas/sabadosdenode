@@ -1,0 +1,14 @@
+
+{
+    "ext": "js, cjs, mjs, json, hbs",
+    "watch": [
+    "views/**/*",
+    "public/**/*",
+    "routes/**/*",
+    "controllers/**/*",
+    "conexion/**/*",
+    "models/**/*",
+    "app.js",
+    "server.js"
+    ]
+}

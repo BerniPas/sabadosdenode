@@ -1,0 +1,10 @@
+
+
+########## Data de la Aplicación ##########
+
+app.set() => setea configuraciones que necesitemos utilizar
+
+
+// dos formas para que podamos utilizar el ruteo de express
+app.use('/home', homeRouter);
+app.use('/user', require('./routes/usersRouters'));
