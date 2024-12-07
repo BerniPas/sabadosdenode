@@ -1,0 +1,29 @@
+<div class="container text-center">
+    <h1>Form Actualizar Productos</h1>
+</div>
+
+<div>
+    <form class="contacto__form" action="/product/updatedata/{{products._id}}" method="post">
+
+        <label for="nombreProducto">Nombre: </label>
+        <input type="text" id="nombreProducto" class="inputPadron" required name="nombreProducto" value={{ products.nombreProducto }}>
+
+        <label for="precioProducto">Precio: </label>
+        <input type="number" min="1" id="precioProducto" class="inputPadron" required name="precioProducto" value={{ products.precioProducto }}>
+
+        <label for="descripcionProducto">Descripción: </label>
+        <input type="text" id="descripcionProducto" class="inputPadron" required
+        name="descripcionProducto" value={{ products.descripcionProducto }}></input>
+
+        <label for="stockProducto">Stock: </label>
+        <input type="number" min="1" id="stockProducto" class="inputPadron" required name="stockProducto" value={{ products.stockProducto }}>
+
+        <label for="imagenProducto">Imagen: </label>
+        <input type="text" id="imagenProducto" class="inputPadron" required name="imagenProducto" value={{ products.imagenProducto }}>
+
+        <input type="submit" class="btn btn-warning" value="Actualizar Producto">
+        
+
+    </form>
+
+</div>

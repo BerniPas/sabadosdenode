@@ -1,8 +1,14 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import Joi from 'joi';
+import validarUsuario from '../helpers/validarUsuario.js';
+import sendMail from '../helpers/sendMail.js';
 
-const Clientes = require('../models/usuarioModel');
+import { validationResult } from 'express-validator';
+dotenv.config();
+
+import Clientes from '../models/usuarioModel.js';
 
 const userIndex = (req, res) => {
     res.render('index');
@@ -35,11 +41,6 @@ const userAdmin = (req, res) => {
                 mensaje: 'Error en el token'
         })
     }
-
-
-
-
-
     res.render('admin');
 };
 
@@ -47,9 +48,53 @@ const userAdmin = (req, res) => {
 //Función para crear un nuevo usuario
 const userCreate = async (req, res) => {
 
+    const validar = await validationResult(req.body);
+
+    console.log(validar);
+    
+
+    const { nombre, email, password } = req.body;
+
+    if(!validar.isEmpty()){
+        return res.render('error', {
+            mensaje: validar.array()[0].msg
+        });
+    }
+   /*  //Utilizamos un validador de datos con Joi
+    // Definimos el esquema de validación
+    const schemaCreate = Joi.object({
+        nombre: Joi.string().min(3).max(25).required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).pattern(new RegExp('^[a-zA-Z0-9]{6, 15}$')).required()
+    })
 
     //Recibimos los datos del formulario
-    const { nombre, email, password } = req.body;
+
+    // creamos un objeto para facilitar la validación con JOI
+    const persona ={
+        nombre,
+        email,
+        password
+    }
+
+    //opcion para modularizar la validación
+    //const validar = await validarUsuario(persona);
+
+    //Validamos los datos con Joi
+    const { error, value } = schemaCreate.validate(persona);
+
+    if(error){
+        console.log(`Error: ${error.details[0].message}`);
+        return res.render('error', {
+            mensaje: error.details[0].message
+        });
+    }else{
+        console.log(`Validado: ${value}`);
+    }
+ */
+
+
+    
 
     //Analizamos en consola los datos
     console.log(`1. Datos recibidos ${nombre} - ${email} - ${password}`);
@@ -87,6 +132,10 @@ const userCreate = async (req, res) => {
         //Guardamos el usuario en la base de datos
         await usuarioNuevo.save();
 
+
+        //Enviamos un mensaje por mail | Enviar un mail con nodemailer
+        await sendMail(usuarioNuevo.nombre, usuarioNuevo.email);
+
         // Renderizamos la página de inicio
         return res.render('index', {
             mensaje: 'Usuario Creado Correctamente, Inicia Sesión para realizar tu pedido'
@@ -96,7 +145,7 @@ const userCreate = async (req, res) => {
     } catch (error) {
         //En caso de error, renderizamos la página de error
         return res.render('error', {
-            mensajeErrorData
+            mensaje: 'Error en el servidor, estamos trabajando en el problema'
         });
     }
 
@@ -160,6 +209,18 @@ const userLogin = async (req, res) => {
                 });
             }
 
+            //agregar la sesión del usuario
+            req.session.usuario = {
+                id: usuario._id,
+                nombre: usuario.nombre,
+                email: usuario.email
+            };
+
+            console.log(req.session.usuario);
+
+            //guardamos la sesión en la base de datos
+            await req.session.save();
+
             if(isMatch && usuario.role == 'user'){
                 return res.render('productos', {
                     mensaje: `Bienvenido a la sección de productos ${usuario.nombre}`
@@ -181,7 +242,7 @@ const userLogin = async (req, res) => {
 } 
 
 
-    module.exports = {
+    export {
         userIndex,
         userRegister,
         userLoginView,

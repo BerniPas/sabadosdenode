@@ -1,0 +1,42 @@
+<div class="m-5">
+    <h1 class="m-5 text-center">
+        Cards de los Productos
+    </h1>
+
+    <div class="d-flex flex-row m-2 justify-content-center">
+
+        {{#each products }}
+
+            <div class="card m-3" style="width: 50rem;">
+                <img src={{ imagenProducto }} class="card-img-top" alt="pizzas a la venta">
+                <div class="card-body">
+                    <h5 class="card-title">{{ nombreProducto }}</h5>
+                    <p class="card-text">
+                        {{ descripcionProducto }}
+                    </p>
+{{!--                     <p>
+                        {{ _id }}
+                    </p> --}}
+                </div>
+                <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item">{{ precioProducto}}</li>
+                    <li class="list-group>item">
+                        <button type="button" class="btn btn-success">Ver Producto</button>
+                    </li>
+                    <li class="list-group>item">
+                        <form action="/product/delete/{{_id}}" method="post">
+                            <input type="submit" class="btn btn-danger" value="Eliminar Producto">
+                        </form>
+                    </li>
+                    <li class="list-group>item">
+                        <form action="/product/update/{{_id}}" method="post">
+                            <input type="submit" class="btn btn-warning" value="Actualizar Producto">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+        {{/each}}
+
+    </div>
+</div>

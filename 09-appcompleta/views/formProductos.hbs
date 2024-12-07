@@ -1,0 +1,28 @@
+<div class="container text-center">
+    <h1>Registro de Productos</h1>
+</div>
+
+<div>
+    <form class="contacto__form" action="/product/registro" method="post">
+
+        <label for="nombreProducto">Nombre: </label>
+        <input type="text" id="nombreProducto" class="inputPadron" required name="nombreProducto">
+
+        <label for="precioProducto">Precio: </label>
+        <input type="number" min="1" id="precioProducto" class="inputPadron" required name="precioProducto">
+
+        <label for="descripcionProducto">Descripción: </label>
+        <textarea type="text" id="descripcionProducto" class="inputPadron" required
+            name="descripcionProducto"></textarea>
+
+        <label for="stockProducto">Stock: </label>
+        <input type="number" min="1" id="stockProducto" class="inputPadron" required name="stockProducto">
+
+        <label for="imagenProducto">Imagen: </label>
+        <input type="text" id="imagenProducto" class="inputPadron" required name="imagenProducto">
+
+        <input type="submit" value="Ingresar" id="enviar" class="enviar">
+
+    </form>
+
+</div>
